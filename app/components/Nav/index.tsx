@@ -4,7 +4,11 @@ function Nav() {
   const { state } = useNavigation();
   return (
     <div className="bg-black text-white p-3">
-      {state === "loading" ? <p>Loading...</p> : ""}
+      {state === "loading" ? (
+        <p className="absolute top-0, left-1/2">Loading...</p>
+      ) : (
+        ""
+      )}
       <NavLink
         to="/"
         className={({ isActive }) =>

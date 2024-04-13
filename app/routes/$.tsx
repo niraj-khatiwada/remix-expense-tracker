@@ -17,7 +17,6 @@ export const loader: LoaderFunction = ({ params }) => {
   const splatRoute = params?.["*"];
 
   if (splatRoute === "youtube") {
-    console.log(splatRoute);
     throw redirect("https://youtube.com");
   }
 

@@ -1,5 +1,6 @@
 import { MetaFunction } from "@remix-run/node";
 // import { useLoaderData } from "@remix-run/react";
+import db from "~/db/index.server";
 
 // This will share the path /expenses but not the ./expenses.tsx layout
 // function ExpensesRaw() {
@@ -8,15 +9,10 @@ import { MetaFunction } from "@remix-run/node";
 // }
 
 // If you just have a loader in the component, it will return the raw data. This is just like a GET API request
-export function loader() {
-  return [
-    {
-      id: "1",
-      title: "Food",
-      amount: 1500,
-      description: "New year fest.",
-    },
-  ];
+export async function loader() {
+  const expenses = (await db.query("SELECT * FROM expense"))?.rows ?? [];
+
+  return expenses;
 }
 
 export const meta: MetaFunction = () => {
