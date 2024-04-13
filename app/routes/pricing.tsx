@@ -1,13 +1,12 @@
 import { MetaFunction } from "@remix-run/node";
-import { Outlet } from "@remix-run/react";
-import Nav from "~/components/Nav";
+import Layout from "~/components/Layout";
 
 function PricingLayout() {
   return (
-    <div>
-      <Nav />
-      <Outlet />
-    </div>
+    <Layout>
+      Pricing:
+      <img src="/pricing.png" alt="pricing" width="1000" />
+    </Layout>
   );
 }
 

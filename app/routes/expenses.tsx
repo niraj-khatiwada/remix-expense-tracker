@@ -2,7 +2,7 @@ import { MetaFunction } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 import Layout from "~/components/Layout";
 
-function RootLayout() {
+function ExpensesLayout() {
   return (
     <Layout>
       <Outlet />
@@ -11,10 +11,8 @@ function RootLayout() {
 }
 
 export const meta: MetaFunction = () => [
-  {
-    title: "Home",
-  },
-  { description: "Home page" },
+  { title: "My Expenses" },
+  { description: "My Expenses" },
 ];
 
-export default RootLayout;
+export default ExpensesLayout;
