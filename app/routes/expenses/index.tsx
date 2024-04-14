@@ -2,6 +2,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 
 import db from "~/db/index.server";
 import { Expense } from "~/types/expense";
+import ClientOnly from "~/components/ClientOnly";
 
 function Expenses() {
   const expenses: Expense[] = useLoaderData();
@@ -12,22 +13,25 @@ function Expenses() {
       </Link>
       <section>
         Expenses:{" "}
-        <Link to="./raw" className=" block text-blue-500">
+        <Link to="./raw" className=" block text-blue-500 w-fit">
           Raw
         </Link>
         <div>
           {expenses?.length !== 0 ? (
             expenses?.map((expense) => (
-              <div
+              <Link
+                to={`./${expense?.id}`}
                 key={expense?.id}
-                className="p-2 px-5 bg-gray-100 rounded-md w-fit my-2"
+                className="block p-2 px-5 bg-gray-100 rounded-md w-fit my-2 min-w-[250px]"
               >
                 <p className="my-2 border-b-2">{expense?.title ?? ""}</p>
                 <p className="my-2 border-b-2">${expense?.amount ?? ""}</p>
-                <p className="my-2 border-b-2">
-                  {new Date(expense?.createdAt)?.toString() ?? ""}
+                <p className="my-2 border-b-2 min-h-[50px]">
+                  <ClientOnly fallback={"loading..."}>
+                    {new Date(expense?.createdAt)?.toLocaleString()}
+                  </ClientOnly>
                 </p>
-              </div>
+              </Link>
             ))
           ) : (
             <span className="block text-center m-5">Empty Expenses...</span>

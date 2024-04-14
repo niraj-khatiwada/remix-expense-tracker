@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "remix-expense-tracker",
   "private": true,
   "sideEffects": false,
   "type": "module",
