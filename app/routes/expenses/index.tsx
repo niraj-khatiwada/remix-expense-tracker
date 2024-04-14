@@ -3,9 +3,16 @@ import { Link, useLoaderData } from "@remix-run/react";
 import db from "~/db/index.server";
 import { Expense } from "~/types/expense";
 import ClientOnly from "~/components/ClientOnly";
+import {
+  // HeadersFunction,
+  LoaderFunction,
+  redirect,
+} from "@remix-run/node";
+import { getAuthenticationStatus } from "~/utils/auth.server";
 
 function Expenses() {
   const expenses: Expense[] = useLoaderData();
+
   return (
     <div>
       <Link to="./new" className="px-3 py-2 bg-teal-500 block my-2 w-fit">
@@ -42,9 +49,26 @@ function Expenses() {
   );
 }
 
-export async function loader() {
-  const result = await db.query("SELECT * FROM expense;");
+export const loader: LoaderFunction = async ({ request }) => {
+  const authStatus = await getAuthenticationStatus(
+    request.headers.get("Cookie") as string
+  );
+  const { isAuthenticated } = authStatus;
+  if (!isAuthenticated) {
+    return redirect("/");
+  }
+  const { userId } = authStatus;
+
+  const result = await db.query(
+    `SELECT * FROM expense WHERE "userId" = ${userId};`
+  );
   return result?.rows;
-}
+};
+
+// Set custom headers for this /expenses page
+// parentHeaders = headers from parent which will be /expenses layout for this one
+// export const headers: HeadersFunction = ({ parentHeaders }) => ({
+//   "Cache-Control": parentHeaders?.get("Cache-Control") ?? "max-age=60",
+// });
 
 export default Expenses;

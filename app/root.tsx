@@ -6,8 +6,9 @@ import {
   ScrollRestoration,
   useRouteError,
 } from "@remix-run/react";
-import { LinksFunction } from "@remix-run/node";
+import { LinksFunction, LoaderFunction } from "@remix-run/node";
 
+import { getAuthenticationStatus } from "~/utils/auth.server";
 import styles from "./index.css?url";
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -46,6 +47,10 @@ export function ErrorBoundary() {
     </html>
   );
 }
+
+export const loader: LoaderFunction = async ({ request }) => {
+  return getAuthenticationStatus(request.headers.get("Cookie") as string);
+};
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 

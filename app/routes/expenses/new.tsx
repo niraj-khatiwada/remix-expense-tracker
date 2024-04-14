@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import db from "~/db/index.server";
 import ExpenseForm from "./components/ExpenseForm";
+import { getAuthenticationStatus } from "~/utils/auth.server";
 
 function NewExpense() {
   // const submit = useSubmit(); // You can use this hook to programmatically submit the form
@@ -18,6 +19,15 @@ function NewExpense() {
 }
 
 export const action: ActionFunction = async ({ request }) => {
+  const authStatus = await getAuthenticationStatus(
+    request.headers.get("Cookie") as string
+  );
+  const { isAuthenticated } = authStatus;
+  if (!isAuthenticated) {
+    throw redirect("/auth");
+  }
+  const { userId } = authStatus;
+
   const formData = await request.formData();
   const formPayload = Object.fromEntries(formData);
 
@@ -44,7 +54,7 @@ export const action: ActionFunction = async ({ request }) => {
   const { title, amount } = validation.data;
 
   await db.query(
-    `INSERT INTO expense(title, amount, "createdAt") VALUES('${title}', '${amount}', NOW())`
+    `INSERT INTO expense(title, amount, "userId", "createdAt") VALUES('${title}','${amount}', ${userId}, NOW())`
   );
 
   return redirect("/expenses");

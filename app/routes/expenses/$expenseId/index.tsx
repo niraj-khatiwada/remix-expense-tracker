@@ -1,5 +1,10 @@
 import { LoaderFunction } from "@remix-run/node";
-import { Link, useLoaderData, useMatches, useFetcher } from "@remix-run/react";
+import {
+  Link,
+  useLoaderData,
+  // useMatches,
+  useFetcher,
+} from "@remix-run/react";
 import { z } from "zod";
 
 import ClientOnly from "~/components/ClientOnly";
@@ -10,8 +15,8 @@ import { LoaderData } from "~/types/loader-data";
 function Expense() {
   // Shows the entry point from root to this page. Also allows you to use loader data if was fetched.
   // It also includes data from layouts
-  const matches = useMatches();
-  console.log(matches);
+  // const matches = useMatches();
+  // console.log(matches);
 
   const loaderData: LoaderData<Expense> = useLoaderData();
   const fetcher = useFetcher();

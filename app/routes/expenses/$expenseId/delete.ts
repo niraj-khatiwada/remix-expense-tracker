@@ -1,12 +1,22 @@
-import { ActionFunction, json } from "@remix-run/node";
+import { ActionFunction, json, redirect } from "@remix-run/node";
 import { z } from "zod";
 
 import db from "~/db/index.server";
+import { getAuthenticationStatus } from "~/utils/auth.server";
 
 export const action: ActionFunction = async ({ params, request }) => {
   if (!(request.method === "DELETE")) {
     throw new Error("Invalid action method.");
   }
+
+  const authStatus = await getAuthenticationStatus(
+    request.headers.get("Cookie") as string
+  );
+  const { isAuthenticated } = authStatus;
+  if (!isAuthenticated) {
+    throw redirect("/auth");
+  }
+  const { userId } = authStatus;
 
   const paramsValidation = z
     .object({
@@ -23,7 +33,9 @@ export const action: ActionFunction = async ({ params, request }) => {
 
   const { expenseId } = paramsValidation.data;
 
-  await db.query(`DELETE FROM expense WHERE id = ${expenseId}`);
+  await db.query(
+    `DELETE FROM expense WHERE id = ${expenseId} AND "userId" = ${userId}`
+  );
 
   // return redirect("/expenses");
 
